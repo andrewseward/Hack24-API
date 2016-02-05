@@ -1,3 +1,5 @@
+require('source-map-support').install();
+
 var Server = require('../build/server/server');
 
 const server = new Server.Server();
