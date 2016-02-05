@@ -1,40 +1,40 @@
 import * as assert from 'assert';
-import {spawn, ChildProcess} from 'child_process';
+import {spawn, fork, ChildProcess} from 'child_process';
 import * as mongoose from 'mongoose';
 
 class ApiServer {
-  private static _spawn: ChildProcess;
+  private static _api: ChildProcess;
   
   static start(): void {
     
     console.log('Starting API server...');
     
-    this._spawn = spawn('node', ['--use_strict', '../bin/server.js'], {
+    this._api = fork('../server/server', [], {
       cwd: process.cwd(),
       env: { PORT: 12123 }
     })
   
     if (process.env.DEBUG) {
-      this._spawn.stdout.setEncoding('utf8');
-      this._spawn.stderr.setEncoding('utf8');
-      this._spawn.stdout.on('data', console.log);
-      this._spawn.stderr.on('data', console.error);
+      this._api.stdout.setEncoding('utf8');
+      this._api.stderr.setEncoding('utf8');
+      this._api.stdout.on('data', console.log);
+      this._api.stderr.on('data', console.error);
     }
   
-    this._spawn.on('close', function (code) {
+    this._api.on('close', function (code) {
       if (code !== 0) return console.error(new Error('API closed with non-zero exit code (' + code + ')'));
       console.log('API closed.');
     });
   
-    this._spawn.on('error', (err) => {
+    this._api.on('error', (err) => {
       throw new Error('Unable to start API: ' + err.message);
     });
   }
   
   static stop(): void {
-    if (!this._spawn) return;
+    if (!this._api) return;
     console.log('Stopping API server...');
-    this._spawn.kill('SIGINT');
+    this._api.kill('SIGINT');
   }
 }
 
