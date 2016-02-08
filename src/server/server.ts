@@ -39,12 +39,6 @@ export class Server {
     this._app.get('/slack/', bodyParser, SlackRoute.Check);
     this._app.post('/slack/', bodyParser, SlackRoute.Invite);
 
-    this._app.get('/slack/', SlackRoute.Check);
-    this._app.post('/slack/', SlackRoute.Invite);
-
-    this._app.get('/slack/', SlackRoute.Check);
-    this._app.post('/slack/', SlackRoute.Invite);
-
     this._app.get('/api', function(req, res) {
       res.send('Hack24 API is running');
     });
