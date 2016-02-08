@@ -1,4 +1,4 @@
-var request = require('request');
+import {post} from 'request';
 
 export var Invite = function(email) {
   console.log("Inviting to Slack: " + email);
@@ -21,7 +21,7 @@ export var Invite = function(email) {
         body = JSON.parse(body);
         if (!body.ok) {
           var error = body.error;
-          console.log("Error returned:" + error);
+          console.log("Error returned:" + error  );
           if (error === 'already_invited' || error === 'already_in_team') {
             console.log("Already in team");
             return;
