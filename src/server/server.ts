@@ -2,6 +2,7 @@ import * as express from 'express';
 import {Server as HttpServer} from 'http';
 import * as mongoose from 'mongoose';
 import * as UsersRoute from './routes/users';
+import * as SlackRoute from './routes/slack';
 import * as TeamsRoute from './routes/teams';
 import {UserModel, TeamModel} from './models'
 import {json as jsonParser} from 'body-parser'
@@ -25,7 +26,7 @@ export class Server {
 
   constructor() {
     mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/hack24db');
-    
+
     const bodyParser = jsonParser();
 
     this._app = express();
@@ -35,7 +36,10 @@ export class Server {
 
     this._app.post('/teams/', bodyParser, createModels, TeamsRoute.Create);
 
-    this._app.get('/api', (req, res) => {
+    this._app.get('/slack/', bodyParser, SlackRoute.Check);
+    this._app.post('/slack/', bodyParser, SlackRoute.Invite);
+
+    this._app.get('/api', function(req, res) {
       res.send('Hack24 API is running');
     });
   }
@@ -50,7 +54,7 @@ export class Server {
       });
     });
   }
-  
+
   close(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this._server.close(() => {
