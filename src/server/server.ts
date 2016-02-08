@@ -2,6 +2,7 @@ import * as express from 'express';
 import {Server as HttpServer} from 'http';
 import * as mongoose from 'mongoose';
 import * as UsersRoute from './routes/users';
+import * as SlackRoute from './routes/slack';
 import * as TeamsRoute from './routes/teams';
 import {UserModel} from './models'
 import {TeamModel} from './models'
@@ -43,6 +44,9 @@ export class Server {
     this._app.delete('/teams/:id', createModels, TeamsRoute.Delete);
     this._app.post('/teams/', createModels, TeamsRoute.Create);
     this._app.put('/teams/:id', createModels, TeamsRoute.Update);
+
+    this._app.get('/slack/', SlackRoute.Check);
+    this._app.post('/slack/', SlackRoute.Invite);
 
     this._app.get('/api', function(req, res) {
       res.send('Hack24 API is running');
